@@ -1,17 +1,12 @@
-import Ember from 'ember';
+import Service from '@ember/service';
+import { assert } from '@ember/debug';
+import { set, get, getWithDefault } from '@ember/object';
+import { merge } from '@ember/polyfills';
+import { copy } from '@ember/object/internals';
+import { A as emberArray } from '@ember/array';
+import { dasherize } from '@ember/string';
 import getOwner from 'ember-getowner-polyfill';
 
-const {
-  Service,
-  getWithDefault,
-  assert,
-  get,
-  set,
-  merge,
-  copy,
-  A: emberArray,
-  String: { dasherize }
-} = Ember;
 const { keys } = Object;
 
 export default Service.extend({

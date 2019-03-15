@@ -1,17 +1,14 @@
-import Ember from 'ember';
+import { isPresent } from '@ember/utils';
+import { copy } from '@ember/object/internals';
+import { assert } from '@ember/debug';
+import { merge } from '@ember/polyfills';
+import { get } from '@ember/object';
+import $ from 'jquery';
+import { capitalize } from '@ember/string';
 import canUseDOM from '../utils/can-use-dom';
 import objectTransforms from '../utils/object-transforms';
 import BaseAdapter from './base';
 
-const {
-  isPresent,
-  copy,
-  assert,
-  merge,
-  get,
-  $,
-  String: { capitalize },
-} = Ember;
 const { compact } = objectTransforms;
 
 export default BaseAdapter.extend({

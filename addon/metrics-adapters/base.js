@@ -1,14 +1,13 @@
 /* jshint unused: false */
+import { assert } from '@ember/debug';
+
+import { guidFor } from '@ember/object/internals';
+import { typeOf } from '@ember/utils';
+import emberObject, { set, aliasMethod } from '@ember/object';
 import Ember from 'ember';
 import canUseDOM from '../utils/can-use-dom';
 
 const {
-  Object: emberObject,
-  aliasMethod,
-  assert,
-  guidFor,
-  typeOf,
-  set,
   K
 } = Ember;
 
