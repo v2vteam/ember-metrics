@@ -42,7 +42,7 @@ function getEach(arr, propName) {
 }
 
 module.exports = {
-  name: 'ember-metrics',
+  name: require('./package').name,
 
   included: function(app) {
     this._super.included.apply(this, arguments);
