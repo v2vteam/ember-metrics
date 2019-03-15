@@ -20,9 +20,7 @@ module('mixpanel adapter', function(hooks) {
 
   test('#identify calls `mixpanel.identify` with the right arguments', function(assert) {
     var adapter = this.owner.factoryFor('ember-metrics@metrics-adapter:mixpanel').create({ config });
-    const stub = sandbox.stub(window.mixpanel, 'identify', () => {
-      return true;
-    });
+    window.mixpanel.identify = sandbox.stub().returns(true);
     adapter.identify({
       distinctId: 123,
       foo: 'bar',
@@ -31,15 +29,13 @@ module('mixpanel adapter', function(hooks) {
     adapter.identify({
       distinctId: 123
     });
-    assert.ok(stub.firstCall.calledWith(123, { cookie: 'chocolate chip', foo: 'bar' }), 'it sends the correct arguments and options');
-    assert.ok(stub.secondCall.calledWith(123), 'it sends the correct arguments');
+    assert.ok(window.mixpanel.identify.firstCall.calledWith(123, { cookie: 'chocolate chip', foo: 'bar' }), 'it sends the correct arguments and options');
+    assert.ok(window.mixpanel.identify.secondCall.calledWith(123), 'it sends the correct arguments');
   });
 
   test('#trackEvent calls `mixpanel.track` with the right arguments', function(assert) {
     var adapter = this.owner.factoryFor('ember-metrics@metrics-adapter:mixpanel').create({ config });
-    const stub = sandbox.stub(window.mixpanel, 'track', () => {
-      return true;
-    });
+    window.mixpanel.track = sandbox.stub().returns(true);
     adapter.trackEvent({
       event: 'Video played',
       videoLength: 213,
@@ -48,15 +44,13 @@ module('mixpanel adapter', function(hooks) {
     adapter.trackEvent({
       event: 'Ate a cookie'
     });
-    assert.ok(stub.firstCall.calledWith('Video played', { videoLength: 213, id: 'hY7gQr0' }), 'it sends the correct arguments and options');
-    assert.ok(stub.secondCall.calledWith('Ate a cookie'), 'it sends the correct arguments');
+    assert.ok(window.mixpanel.track.calledWith('Video played', { videoLength: 213, id: 'hY7gQr0' }), 'it sends the correct arguments and options');
+    assert.ok(window.mixpanel.track.calledWith('Ate a cookie'), 'it sends the correct arguments');
   });
 
   test('#alias calls `mixpanel.alias` with the right arguments', function(assert) {
     var adapter = this.owner.factoryFor('ember-metrics@metrics-adapter:mixpanel').create({ config });
-    const stub = sandbox.stub(window.mixpanel, 'alias', () => {
-      return true;
-    });
+    window.mixpanel.alias = sandbox.stub().returns(true);
     adapter.alias({
       alias: 'user@example.com',
       original: 123
@@ -64,7 +58,7 @@ module('mixpanel adapter', function(hooks) {
     adapter.alias({
       alias: 'foo@bar.com'
     });
-    assert.ok(stub.firstCall.calledWith('user@example.com', 123), 'it sends the correct arguments and options');
-    assert.ok(stub.secondCall.calledWith('foo@bar.com'), 'it sends the correct arguments');
+    assert.ok(window.mixpanel.alias.firstCall.calledWith('user@example.com', 123), 'it sends the correct arguments and options');
+    assert.ok(window.mixpanel.alias.secondCall.calledWith('foo@bar.com'), 'it sends the correct arguments');
   });
 });

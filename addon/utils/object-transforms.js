@@ -1,4 +1,4 @@
-import { isPresent } from '@ember/utils';
+import { isPresent as EmberIsPresent } from '@ember/utils';
 
 export function compact(objectInstance) {
   const compactedObject = {};
@@ -6,7 +6,7 @@ export function compact(objectInstance) {
   for (let key in objectInstance) {
     const value = objectInstance[key];
 
-    if (isPresent(value)) {
+    if (EmberIsPresent(value)) {
       compactedObject[key] = value;
     }
   }

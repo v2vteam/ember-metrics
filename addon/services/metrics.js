@@ -5,7 +5,7 @@ import { merge } from '@ember/polyfills';
 import { copy } from '@ember/object/internals';
 import { A as emberArray } from '@ember/array';
 import { dasherize } from '@ember/string';
-import getOwner from 'ember-getowner-polyfill';
+import { getOwner } from '@ember/application';
 
 const { keys } = Object;
 
@@ -153,7 +153,7 @@ export default Service.extend({
     const Adapter = this._lookupAdapter(name);
     assert(`[ember-metrics] Could not find metrics adapter ${name}.`, Adapter);
 
-    return Adapter.create({ this, config });
+    return Adapter.create({ config });
   },
 
   /**
@@ -191,6 +191,6 @@ export default Service.extend({
     environments = environments || ['all'];
     const wrappedEnvironments = emberArray(environments);
 
-    return wrappedEnvironments.contains('all') || wrappedEnvironments.contains(appEnvironment);
+    return wrappedEnvironments.any((environment) => environment ==='all' || environment === appEnvironment);
   }
 });

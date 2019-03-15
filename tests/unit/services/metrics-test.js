@@ -98,8 +98,10 @@ module('Unit | Service | metrics', function(hooks) {
 
   test('#invoke invokes the named method on activated adapters', function(assert) {
     const service = this.owner.factoryFor('service:metrics').create({ options });
-    const MixpanelStub = sandbox.stub(window.mixpanel, 'identify');
-    const GoogleAnalyticsStub = sandbox.stub(window, 'ga');
+
+    window.mixpanel.identify = sandbox.stub();
+    window.ga = sandbox.stub();
+    window.mixpanel.identify = sandbox.stub();
     const GoogleAnalyticsSpy = sandbox.spy(get(service, '_adapters.GoogleAnalytics'), 'identify');
     const MixpanelSpy = sandbox.spy(get(service, '_adapters.Mixpanel'), 'identify');
     const opts = {
@@ -111,15 +113,15 @@ module('Unit | Service | metrics', function(hooks) {
 
     assert.ok(GoogleAnalyticsSpy.calledOnce, 'it invokes the identify method on the adapter');
     assert.ok(GoogleAnalyticsSpy.calledWith(opts), 'it invokes with the correct arguments');
-    assert.ok(GoogleAnalyticsStub.calledOnce, 'it invoked the GoogleAnalytics method');
+    assert.ok(window.ga.calledOnce, 'it invoked the GoogleAnalytics method');
     assert.ok(MixpanelSpy.calledOnce, 'it invokes the identify method on the adapter');
     assert.ok(MixpanelSpy.calledWith(opts), 'it invokes with the correct arguments');
-    assert.ok(MixpanelStub.calledOnce, 'it invoked the Mixpanel method');
+    assert.ok(window.mixpanel.identify.calledOnce, 'it invoked the Mixpanel method');
   });
 
   test('#invoke invokes the named method on a single activated adapter', function(assert) {
     const service = this.owner.factoryFor('service:metrics').create({ options });
-    const GoogleAnalyticsStub = sandbox.stub(window, 'ga');
+    window.ga = sandbox.stub();
     const GoogleAnalyticsSpy = sandbox.spy(get(service, '_adapters.GoogleAnalytics'), 'trackEvent');
     const MixpanelSpy = sandbox.spy(get(service, '_adapters.Mixpanel'), 'trackEvent');
     const opts = {
@@ -131,18 +133,18 @@ module('Unit | Service | metrics', function(hooks) {
 
     assert.ok(GoogleAnalyticsSpy.calledOnce, 'it invokes the track method on the adapter');
     assert.ok(GoogleAnalyticsSpy.calledWith(opts), 'it invokes with the correct arguments');
-    assert.ok(GoogleAnalyticsStub.calledOnce, 'it invoked the Google Analytics method');
+    assert.ok(window.ga.calledOnce, 'it invoked the Google Analytics method');
     assert.equal(MixpanelSpy.callCount, 0, 'it does not invoke other adapters');
   });
 
   test('#invoke invokes the named method on a single activated adapter with no arguments', function(assert) {
     const service = this.owner.factoryFor('service:metrics').create({ options });
-    const GoogleAnalyticsStub = sandbox.stub(window, 'ga');
+     window.ga = sandbox.stub();
     const GoogleAnalyticsSpy = sandbox.spy(get(service, '_adapters.GoogleAnalytics'), 'trackPage');
     service.invoke('trackPage', 'GoogleAnalytics');
 
     assert.ok(GoogleAnalyticsSpy.calledOnce, 'it invokes the track method on the adapter');
-    assert.ok(GoogleAnalyticsStub.calledOnce, 'it invoked the Google Analytics method');
+    assert.ok(window.ga.calledOnce, 'it invoked the Google Analytics method');
   });
 
   test('#invoke includes `context` properties', function(assert) {
@@ -179,8 +181,8 @@ module('Unit | Service | metrics', function(hooks) {
   test('it implements standard contracts', function(assert) {
     const service = this.owner.factoryFor('service:metrics').create({ options });
     delete window.mixpanel.toString;
-    sandbox.stub(window.mixpanel);
-    sandbox.stub(window, 'ga');
+    window.mixpanel.identify = sandbox.stub();
+    window.ga = sandbox.stub();
     const spy = sandbox.spy(service, 'invoke');
     const expectedContracts = [ 'identify', 'alias', 'trackEvent', 'trackPage' ];
 

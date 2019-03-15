@@ -20,7 +20,7 @@ module('google-tag-manager adapter', function(hooks) {
 
   test('#trackEvent returns the correct response shape', function(assert) {
     const adapter = this.owner.factoryFor('ember-metrics@metrics-adapter:google-tag-manager').create({ config });
-    sandbox.stub(window, 'dataLayer', {push(){}});
+    window.dataLayer = { push: sinon.stub() };
 
     const result = adapter.trackEvent({
       event: 'click-button',
@@ -42,7 +42,7 @@ module('google-tag-manager adapter', function(hooks) {
 
   test('#trackPage returns the correct response shape', function(assert) {
     const adapter = this.owner.factoryFor('ember-metrics@metrics-adapter:google-tag-manager').create({ config });
-    sandbox.stub(window, 'dataLayer', { push(){} });
+    window.dataLayer = { push: sinon.stub() };
 
     const result = adapter.trackPage({
       url: '/my-overridden-page?id=1',
@@ -65,7 +65,7 @@ module('google-tag-manager adapter', function(hooks) {
       config: customConfig
     });
 
-    sandbox.stub(window, 'customDataLayer', { push(){} });
+    window.customDataLayer = { push: sinon.stub() };
 
     const result = adapter.trackPage({
       url: '/my-overridden-page?id=1',
@@ -83,7 +83,7 @@ module('google-tag-manager adapter', function(hooks) {
 
   test('#trackPage accepts custom `keyNames` and returns the correct response shape', function(assert) {
     const adapter = this.owner.factoryFor('ember-metrics@metrics-adapter:google-tag-manager').create({ config });
-    sandbox.stub(window, 'dataLayer', { push(){} });
+    window.dataLayer = { push: sinon.stub() };
 
     const result = adapter.trackPage({
       event: 'VirtualPageView',
