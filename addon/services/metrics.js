@@ -99,10 +99,11 @@ export default Service.extend({
     adapterOptions
       .filter((adapterOption) => this._filterEnvironments(adapterOption, appEnvironment))
       .forEach((adapterOption) => {
-        const { name } = adapterOption;
-        const adapter = cachedAdapters[name] ? cachedAdapters[name] : this._activateAdapter(adapterOption);
+        const { name, clientTracker } = adapterOption;
+        const adapterName = clientTracker || name;
+        const adapter = cachedAdapters[adapterName] ? cachedAdapters[adapterName] : this._activateAdapter(adapterOption);
 
-        set(activatedAdapters, name, adapter);
+        set(activatedAdapters, adapterName, adapter);
       });
 
     return set(this, '_adapters', activatedAdapters);
@@ -173,8 +174,8 @@ export default Service.extend({
     assert('[ember-metrics] Could not find metrics adapter without a name.', adapterName);
 
     const dasherizedAdapterName = dasherize(adapterName);
-    const availableAdapter = getOwner(this).lookup(`ember-metrics@metrics-adapter:${dasherizedAdapterName}`);
-    const localAdapter = getOwner(this).lookup(`metrics-adapter:${dasherizedAdapterName}`);
+    const availableAdapter = getOwner(this).lookup(`ember-metrics@metrics-adapter:${dasherizedAdapterName}`, { singleton: false });
+    const localAdapter = getOwner(this).lookup(`metrics-adapter:${dasherizedAdapterName}`, { singleton: false });
 
     return localAdapter ? localAdapter : availableAdapter;
   },

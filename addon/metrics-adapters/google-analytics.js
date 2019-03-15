@@ -21,12 +21,14 @@ export default BaseAdapter.extend({
 
   init() {
     const config = copy(get(this, 'config'));
-    const { id } = config;
+    const { id, alias } = config;
 
     assert(`[ember-metrics] You must pass a valid \`id\` to the ${this.toString()} adapter`, id);
 
     delete config.id;
+    delete config.alias;
 
+    const hasAlias = isPresent(alias);
     const hasOptions = isPresent(Object.keys(config));
 
     if (canUseDOM) {
@@ -36,12 +38,12 @@ export default BaseAdapter.extend({
         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
       })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
       /* jshint ignore:end */
-      
-      if (hasOptions) {
-        window.ga('create', id, config);
-      } else {
-        window.ga('create', id, 'auto');
-      }
+
+      let params = ['create', id];
+      if (hasAlias) params.push(alias);
+      if (hasOptions) params.push(config);
+
+      window.ga(...params);
     }
   },
 
