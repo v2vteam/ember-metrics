@@ -3,11 +3,11 @@
 
 **Global**: `Ember.K`
 
-**Location**: `addon/metrics-adapters/base.js` at line 12
+**Location**: `addon/metrics-adapters/base.js` at line 11
 
 ```js
-  typeOf,
-  set,
+
+const {
   K
 } = Ember;
 
@@ -17,14 +17,14 @@
 
 **Global**: `Ember.K`
 
-**Location**: `tests/unit/services/metrics-test.js` at line 5
+**Location**: `tests/unit/services/metrics-test.js` at line 8
 
 ```js
-import sinon from 'sinon';
 
-const { get, set, K } = Ember;
+const {
+  K
+} = Ember;
 const environment = 'test';
-let sandbox, metricsAdapters, options;
 ```
 
 ### Unknown Global
