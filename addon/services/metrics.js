@@ -169,8 +169,9 @@ export default Service.extend({
     assert('[ember-metrics] Could not find metrics adapter without a name.', adapterName);
 
     const dasherizedAdapterName = dasherize(adapterName);
-    const availableAdapter = getOwner(this).lookup(`ember-metrics@metrics-adapter:${dasherizedAdapterName}`, { singleton: false });
-    const localAdapter = getOwner(this).lookup(`metrics-adapter:${dasherizedAdapterName}`, { singleton: false });
+
+    const availableAdapter = getOwner(this).lookup(`ember-metrics@metrics-adapter:${dasherizedAdapterName}`, { singleton: false, instantiate: false });
+    const localAdapter = getOwner(this).lookup(`metrics-adapter:${dasherizedAdapterName}`, { singleton: false, instantiate: false });
 
     return localAdapter ? localAdapter : availableAdapter;
   },

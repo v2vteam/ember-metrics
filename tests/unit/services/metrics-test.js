@@ -101,6 +101,7 @@ module('Unit | Service | metrics', function(hooks) {
 
     window.mixpanel.identify = sandbox.stub();
     window.ga = sandbox.stub();
+
     window.mixpanel.identify = sandbox.stub();
     const GoogleAnalyticsSpy = sandbox.spy(get(service, '_adapters.GoogleAnalytics'), 'identify');
     const MixpanelSpy = sandbox.spy(get(service, '_adapters.Mixpanel'), 'identify');
@@ -181,7 +182,7 @@ module('Unit | Service | metrics', function(hooks) {
   test('it implements standard contracts', function(assert) {
     const service = this.owner.factoryFor('service:metrics').create({ options });
     delete window.mixpanel.toString;
-    window.mixpanel.identify = sandbox.stub();
+    window.mixpanel = sandbox.stub();
     window.ga = sandbox.stub();
     const spy = sandbox.spy(service, 'invoke');
     const expectedContracts = [ 'identify', 'alias', 'trackEvent', 'trackPage' ];
