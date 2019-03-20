@@ -2,14 +2,13 @@ import { isPresent } from '@ember/utils';
 import { copy } from '@ember/object/internals';
 import { assert } from '@ember/debug';
 import { merge } from '@ember/polyfills';
-import { get } from '@ember/object';
 import $ from 'jquery';
 import { capitalize } from '@ember/string';
 import canUseDOM from '../utils/can-use-dom';
-import objectTransforms from '../utils/object-transforms';
+import { compact } from '../utils/object-transforms';
 import BaseAdapter from './base';
 
-const { compact } = objectTransforms;
+let isStarted = false;
 
 export default BaseAdapter.extend({
   toStringExtension() {
@@ -17,31 +16,38 @@ export default BaseAdapter.extend({
   },
 
   init() {
-    const config = copy(get(this, 'config'));
-    const { id, alias } = config;
+    const config = copy(this.config);
+    const { id } = config;
 
     assert(`[ember-metrics] You must pass a valid \`id\` to the ${this.toString()} adapter`, id);
 
     delete config.id;
-    delete config.alias;
 
-    const hasAlias = isPresent(alias);
+    const hasAlias = isPresent(this.alias);
     const hasOptions = isPresent(Object.keys(config));
 
     if (canUseDOM) {
-      /* jshint ignore:start */
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-      /* jshint ignore:end */
+      if (!isStarted) {
+        /* jshint ignore:start */
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+        /* jshint ignore:end */
 
-      let params = ['create', id];
-      if (hasAlias) params.push(alias);
+        isStarted = true;
+      }
+
+      let params = ['create', id, 'auto'];
+      if (hasAlias) params.push(this.alias);
       if (hasOptions) params.push(config);
 
       window.ga(...params);
     }
+  },
+
+  _eventName() {
+    return isPresent(this.alias) ? `${this.alias}.send` : 'send';
   },
 
   identify(options = {}) {
@@ -67,7 +73,7 @@ export default BaseAdapter.extend({
     }
 
     const event = merge(sendEvent, gaEvent);
-    window.ga('send', event);
+    window.ga(this._eventName(), event);
 
     return event;
   },
@@ -77,7 +83,7 @@ export default BaseAdapter.extend({
     const sendEvent = { hitType: 'pageview' };
 
     const event = merge(sendEvent, compactedOptions);
-    window.ga('send', event);
+    window.ga(this._eventName(), event);
 
     return event;
   },

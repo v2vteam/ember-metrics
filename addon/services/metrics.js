@@ -94,8 +94,8 @@ export default Service.extend({
     adapterOptions
       .filter((adapterOption) => this._filterEnvironments(adapterOption, appEnvironment))
       .forEach((adapterOption) => {
-        const { name, clientTracker } = adapterOption;
-        const adapterName = clientTracker || name;
+        const { name, alias } = adapterOption;
+        const adapterName = alias || name;
         const adapter = cachedAdapters[adapterName] ? cachedAdapters[adapterName] : this._activateAdapter(adapterOption);
 
         set(activatedAdapters, adapterName, adapter);
@@ -149,11 +149,11 @@ export default Service.extend({
    * @private
    * @return {Adapter}
    */
-  _activateAdapter({ name, config } = {}) {
+  _activateAdapter({ alias, name, config } = {}) {
     const Adapter = this._lookupAdapter(name);
     assert(`[ember-metrics] Could not find metrics adapter ${name}.`, Adapter);
 
-    return Adapter.create({ config });
+    return Adapter.create({ alias, config });
   },
 
   /**

@@ -67,6 +67,7 @@ export default BaseAdapter.extend({
     window[dataLayer].push(pageEvent);
 
     return pageEvent;
+
   },
 
   willDestroy() {
