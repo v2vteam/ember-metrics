@@ -23,8 +23,6 @@ export default BaseAdapter.extend({
       ...options,
     };
 
-    console.log('init', compact(this.options), this.alias, compact(this.config))
-
     this._injectScript(id);
 
     window.dataLayer = window.dataLayer || [];
@@ -41,14 +39,12 @@ export default BaseAdapter.extend({
   },
 
   gtag() {
-    console.log('gtag', arguments);
     window.dataLayer.push(arguments);
 
     return arguments;
   },
 
   trackEvent(options = {}) {
-    console.log('trackEvent GA4', options, this.config);
     const compactedOptions = compact(options);
     const { event } = compactedOptions;
 
@@ -62,7 +58,6 @@ export default BaseAdapter.extend({
   },
 
   trackPage(options = {}) {
-    console.log('trackPage GA4', options);
     if (this.options.send_page_view) {
       return;
     }
